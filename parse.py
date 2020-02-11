@@ -16,6 +16,17 @@ from subprocess import call
 from functools import partial, wraps
 import re
 import argparse
+import platform
+
+
+def generate_cmake(contest, language, problems):
+    folder = '{0}-{1}/'.format(contest, language)
+    with open(folder + 'CMakeLists.txt', 'w') as f:
+        f.write('cmake_minimum_required(VERSION 3.5)\n')
+        f.write('project(contest{0})\n\n'.format(contest))
+
+        for problem in problems:
+            f.write('add_executable({0} {0}/{0}.cc)\n'.format(problem))
 
 ###########################
 # User modifiable constants
@@ -25,7 +36,8 @@ language_params = {
             'TEMPLATE'    : 'main.cc',
             'DEBUG_FLAGS' : '-DDEBUG',
             'COMPILE_CMD' : 'g++ -g -std=c++14 -Wall $DBG',
-            'RUN_CMD'     : './a.out'
+            'RUN_CMD'     : './a.out',
+            'POST_PROCESS': generate_cmake,
             },
         'go'    : {
             'TEMPLATE'    : 'main.go',
@@ -39,6 +51,12 @@ language_params = {
             'DEBUG_FLAGS' : "-d",
             'RUN_CMD'     : 'java -jar out.jar $DBG'
             },
+        'python'    : {
+            'TEMPLATE'    : 'main.py',
+            'COMPILE_CMD' : '',
+            'DEBUG_FLAGS' : "-d",
+            'RUN_CMD'     : 'python'
+            },
         }
 
 SAMPLE_INPUT='input'
@@ -46,13 +64,19 @@ SAMPLE_OUTPUT='output'
 MY_OUTPUT='my_output'
 
 # Do not modify these!
-VERSION='CodeForces Parser v1.5.1: https://github.com/johnathan79717/codeforces-parser'
+VERSION='CodeForces Parser v1.6: https://github.com/siriusfreak/codeforces-parser'
 RED_F='\033[31m'
 GREEN_F='\033[32m'
 BOLD='\033[1m'
 NORM='\033[0m'
-TIME_CMD='`which time` -o time.out -f "(%es)"'
+if (platform.system() == "Darwin"):
+    TIME_CMD='`which gtime` -o time.out -f "(%es)"'
+else:
+    TIME_CMD='`which time` -o time.out -f "(%es)"'
 TIME_AP='`cat time.out`'
+
+
+
 
 # Problems parser.
 class CodeforcesProblemParser(HTMLParser):
@@ -117,7 +141,7 @@ class CodeforcesContestParser(HTMLParser):
                 self.start_contest = True
         elif tag == 'option':
             if len(attrs) == 1:
-                regexp = re.compile(r"'[A-Z]'") # The attrs will be something like: ('value', 'X')
+                regexp = re.compile(r"'[A-Z][0-9]{0,1}'") # The attrs will be something like: ('value', 'X')
                 string = str(attrs[0])
                 search = regexp.search(string)
                 if search is not None:
@@ -158,6 +182,10 @@ def parse_contest(contest):
 # Generates the test script.
 def generate_test_script(folder, language, num_tests, problem):
     param = language_params[language]
+
+    if param['COMPILE_CMD'] is None or param['COMPILE_CMD'] == '':
+        param['RUN_CMD'] += " {0}.{1}".format(problem, param["TEMPLATE"].split('.')[1])
+        param['COMPILE_CMD'] = "true"
 
     with open(folder + 'test.sh', 'w') as test:
         test.write(
@@ -243,6 +271,10 @@ def main():
         print('%d sample test(s) found.' % num_tests)
         generate_test_script(folder, language, num_tests, problem)
         print ('========================================')
+
+    if language_params[language]['POST_PROCESS'] is not None:
+        language_params[language]['POST_PROCESS'](contest, language, content.problems)
+    
 
     print ('Use ./test.sh to run sample tests in each directory.')
 

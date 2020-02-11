@@ -1,4 +1,4 @@
-Codeforces Parser v1.5.1
+Codeforces Parser v1.5.2
 =================
 
 Summary
@@ -36,13 +36,21 @@ Where `512` is the contest number, not the round number! Check the URL of the co
 
 ### Collaborators and Versions:
 
-##### List of CodeForces Collaborators:
+##### List of Collaborators:
 + [johnathan79717](http://codeforces.com/profile/johnathan79717)
 + [brunoja](http://codeforces.com/profile/brunoja)
 + [Matthias Kauer (mini addition)]
++ [ThuanLe](https://github.com/ldt116)
++ [DeinFreund](https://github.com/DeinFreund)
 If you have any suggestions and/or bugs drop a message!
 
 ##### Versions Changes:
++ **1.6:**
+Since this version this is fork.
+Added OSX support by [ThuanLe](https://github.com/ldt116).
+Fix subproblems parsing by by [DeinFreund](https://github.com/DeinFreund).
+Added `CMakeList.txt` generation by [Me](https://github.com/siriusfreak).
+Added `--python` language by [Me](https://github.com/siriusfreak).
 + **1.5.1:**
 Minor bug fixes related to Python 2 vs Python 3.
 Makes the template file to use the proper language extension.
@@ -73,8 +81,3 @@ Added the time measurement for running the test cases.
 For the runtime error case, it now outputs the input case.
 Created some constants, such as compile options. These user modifiable constants should be easily spotted at the first lines of the python script.
 + **1.0:** Initial Version.
-
-##### Todo, Bugs & Troubleshootings:
-
-+ In OS X it is necessary to install the `gnu-time` to measure time.
-+ This parser currently works only on Unix OSes. If you want to add Windows/Other support let us know.
