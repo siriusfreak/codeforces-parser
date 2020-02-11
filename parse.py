@@ -24,7 +24,10 @@ def generate_cmake(contest, language, problems):
     with open(folder + 'CMakeLists.txt', 'w') as f:
         f.write('cmake_minimum_required(VERSION 3.5)\n')
         f.write('project(contest{0})\n\n'.format(contest))
-
+        f.write('set(GCC_COVERAGE_COMPILE_FLAGS "${GCC_COVERAGE_COMPILE_FLAGS} -Wall -Wextra -pedantic -std=c++11 -O2 -Wshadow -Wformat=2 -Wfloat-equal -Wconversion -Wlogical-op -Wshift-overflow=2 -Wduplicated-cond -Wcast-qual -Wcast-align -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_FORTIFY_SOURCE=2 -fsanitize=address -fsanitize=undefined -fno-sanitize-recover -fstack-protector")\n')
+        f.write('add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})\n')
+        f.write('SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")\n')
+        f.write('SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")\n\n')
         for problem in problems:
             f.write('add_executable({0} {0}/{0}.cc)\n'.format(problem))
 
@@ -35,7 +38,7 @@ language_params = {
         'c++14' : {
             'TEMPLATE'    : 'main.cc',
             'DEBUG_FLAGS' : '-DDEBUG',
-            'COMPILE_CMD' : 'g++ -g -std=c++14 -Wall $DBG',
+            'COMPILE_CMD' : 'g++ -g  -Wall -Wextra -pedantic -std=c++11 -O2 -Wshadow -Wformat=2 -Wfloat-equal -Wconversion -Wlogical-op -Wshift-overflow=2 -Wduplicated-cond -Wcast-qual -Wcast-align -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_FORTIFY_SOURCE=2 -fsanitize=address -fsanitize=undefined -fno-sanitize-recover -fstack-protector $DBG',
             'RUN_CMD'     : './a.out',
             'POST_PROCESS': generate_cmake,
             },

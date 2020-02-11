@@ -33,9 +33,10 @@ Where `512` is the contest number, not the round number! Check the URL of the co
 ##### List of Collaborators:
 + [johnathan79717](http://codeforces.com/profile/johnathan79717) Original author
 + [brunoja](http://codeforces.com/profile/brunoja)
-+ [Matthias Kauer (mini addition)]
++ Matthias Kauer (mini addition)
 + [ThuanLe](https://github.com/ldt116)
 + [DeinFreund](https://github.com/DeinFreund)
+
 If you have any suggestions and/or bugs drop a message!
 
 ##### Versions Changes:
